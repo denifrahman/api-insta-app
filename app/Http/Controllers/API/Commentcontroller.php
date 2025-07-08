@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 
-class Commentcontroller extends Controller
+class CommentController extends Controller
 {
     public function post(Request $request)
     {

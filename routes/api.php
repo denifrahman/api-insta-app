@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\Commentcontroller;
 use App\Http\Controllers\API\Likescontroller;
+use App\Http\Controllers\API\LogActivitycontroller;
 use App\Http\Controllers\API\Postcontroller;
 use App\Http\Middleware\LogActivityMiddleware;
 use Illuminate\Http\Request;
@@ -32,6 +33,10 @@ Route::middleware(['auth:api', LogActivityMiddleware::class])->group(function ()
 
     Route::post(('/likes/{post_id}'), [Likescontroller::class, 'post'])->name('likes');
     Route::delete('/unlike/{post_id}', [Likescontroller::class, 'delete'])->name('unlike');
+
+    Route::get('/log-activity', [LogActivitycontroller::class, 'get']);
+
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
 
 Route::get('/test', function () {
