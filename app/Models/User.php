@@ -22,6 +22,7 @@ class User extends Authenticatable implements OAuthenticatable
     protected $fillable = [
         'name',
         'email',
+        'username',
         'password',
     ];
 
@@ -56,6 +57,11 @@ class User extends Authenticatable implements OAuthenticatable
     public function likes()
     {
         return $this->hasMany(Like::class);
+    }
+
+    public function following()
+    {
+        return $this->hasMany(UsersFollows::class);
     }
 
     public function comments()

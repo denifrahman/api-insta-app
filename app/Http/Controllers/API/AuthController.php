@@ -9,16 +9,18 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function register(Request $request) {
+    public function register(Request $request)
+    {
         $request->validate([
-            'name' => 'required',
             'email' => 'required|email',
+            'username' => 'required',
             'password' => 'required'
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'username' => $request->username,
             'password' => Hash::make($request->password)
         ]);
 
@@ -30,13 +32,19 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
+            'email' => 'required',
+            'password' => 'required',
+        ], [
+            'email.required' => 'Username or email is required.',
+            'password.required' => 'Password is required.'
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)
+            ->orWhere('username', $request->email)
+            ->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
@@ -49,14 +57,15 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'User logged in successfully',
             'user' => [
-                'name' => $user->name,
+                'username' => $user->username,
                 'email' => $user->email
             ],
             'token' => $token
         ], 200);
     }
 
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         $request->user()->token()->revoke();
         return response()->json([
             'message' => 'User logged out successfully'
